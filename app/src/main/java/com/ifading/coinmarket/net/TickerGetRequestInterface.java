@@ -14,7 +14,7 @@ import retrofit2.http.GET;
  * @author by yangjingsheng
  */
 
-public interface TickerGetRequest_Interface {
+public interface TickerGetRequestInterface {
     //https://api.coinmarketcap.com/v1/ticker/
 
     @GET("v1/ticker/")

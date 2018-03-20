@@ -1,68 +1,128 @@
 package com.ifading.coinmarket;
 
+import android.graphics.Color;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.ifading.coinmarket.adapter.HomeAdapter;
-import com.ifading.coinmarket.bean.CoinResult;
-import com.ifading.coinmarket.net.TickerGetRequest_Interface;
-
-import java.util.List;
+import com.ifading.coinmarket.fragment.CoinMarketFragment;
+import com.ifading.coinmarket.fragment.ImageFragment;
+import com.ifading.coinmarket.fragment.NewsFragment;
+import com.ifading.coinmarket.adapter.MainViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    @BindView(R.id.main_rv)
-    protected RecyclerView mRv;
+
+    @BindView(R.id.main_tbl)
+    protected TabLayout mTabLayout;
+    @BindView(R.id.main_vp)
+    protected ViewPager mViewPager;
+
+    private TabLayout.Tab one;
+    private TabLayout.Tab two;
+    private TabLayout.Tab three;
+
+    private String[] mTitles = {"Coin", "News", "Imgs"};
+    private int[] mUnselectImgs = {R.drawable.coin_unselect, R.drawable.news_unselect, R.drawable.image_unselect};
+    private int[] mSelectImgs = {R.drawable.coin_select, R.drawable.news_select, R.drawable.image_select};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         initView();
-        initData();
+        initEvent();
     }
 
-    private void initView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getApplicationContext(),LinearLayoutManager.VERTICAL,false);
-        mRv.setLayoutManager(linearLayoutManager);
+    private void initEvent() {
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
-    }
-
-    private void initData() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.coinmarketcap.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-
-        TickerGetRequest_Interface request = retrofit.create(TickerGetRequest_Interface.class);
-        Call<List<CoinResult>> call = request.getCall();
-        call.enqueue(new Callback<List<CoinResult>>() {
             @Override
-            public void onResponse(Call<List<CoinResult>> call, Response<List<CoinResult>> response) {
-                Log.d(TAG,response.body().toString());
-                HomeAdapter homeAdapter = new HomeAdapter(R.layout.home_item_view,response.body());
-                mRv.setAdapter(homeAdapter);
+            public void onTabSelected(TabLayout.Tab tab) {
+                Timber.tag(TAG).d("onTabSelected");
+
+                /*for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
+                    //获得到对应位置的Tab
+                    TabLayout.Tab itemTab = mTabLayout.getTabAt(i);
+                    if (itemTab != null) {
+                        //设置自定义的标题
+                        itemTab.setCustomView(R.layout.item_tab);
+                        TextView textView = (TextView) itemTab.getCustomView().findViewById(R.id.tv_tab_name);
+                        textView.setText(mTitles[i]);
+                        ImageView imageView= (ImageView) itemTab.getCustomView().findViewById(R.id.iv_tab_ico);
+                        imageView.setImageResource(mUnselectImgs[i]);
+                    }
+                }*/
+                TextView tv = (TextView) tab.getCustomView().findViewById(R.id.tv_tab_name);
+                tv.setTextColor(Color.GREEN);
+                ImageView iv = (ImageView) tab.getCustomView().findViewById(R.id.iv_tab_ico);
+
+                iv.setImageResource(mSelectImgs[tab.getPosition()]);
             }
 
             @Override
-            public void onFailure(Call<List<CoinResult>> call, Throwable t) {
-                Log.d(TAG,"连接失败,t:"+t.toString());
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Timber.tag(TAG).d("onTabUnselected");
+                TextView tv = (TextView) tab.getCustomView().findViewById(R.id.tv_tab_name);
+                tv.setTextColor(Color.WHITE);
+                ImageView iv = (ImageView) tab.getCustomView().findViewById(R.id.iv_tab_ico);
+
+                iv.setImageResource(mUnselectImgs[tab.getPosition()]);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
     }
+
+    private void initView() {
+        //给TabLayout设置关联ViewPager，如果设置了ViewPager，那么ViewPagerAdapter中的getPageTitle()方法返回的就是Tab上的标题
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        MainViewPager viewPagerAdapter = new MainViewPager(getSupportFragmentManager());
+        CoinMarketFragment mCoinFragment = CoinMarketFragment.newInstance(0);
+        NewsFragment mNewsFragment = NewsFragment.newInstance(1);
+        ImageFragment imageFragment = ImageFragment.newInstance(2);
+        viewPagerAdapter.addFragment(mCoinFragment, "Coin");
+        viewPagerAdapter.addFragment(mNewsFragment, "News");
+        viewPagerAdapter.addFragment(imageFragment, "Imgs");
+
+        mViewPager.setAdapter(viewPagerAdapter);
+        one = mTabLayout.getTabAt(0);
+        two = mTabLayout.getTabAt(1);
+        three = mTabLayout.getTabAt(2);
+        one.setIcon(R.drawable.coin_unselect);
+        two.setIcon(R.drawable.news_unselect);
+        three.setIcon(R.drawable.image_unselect);
+        for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
+            //获得到对应位置的Tab
+            TabLayout.Tab itemTab = mTabLayout.getTabAt(i);
+            if (itemTab != null) {
+                //设置自定义的标题
+                itemTab.setCustomView(R.layout.item_tab);
+                TextView textView = (TextView) itemTab.getCustomView().findViewById(R.id.tv_tab_name);
+                textView.setTextColor(i == 0 ? Color.GREEN : Color.WHITE);
+                textView.setText(mTitles[i]);
+                ImageView imageView = (ImageView) itemTab.getCustomView().findViewById(R.id.iv_tab_ico);
+                imageView.setImageResource(i == 0 ? mSelectImgs[0] : mUnselectImgs[i]);
+            }
+        }
+        //mTabLayout.getTabAt(0).getCustomView().setSelected(true);
+        //mViewPager.setCurrentItem(0);
+    }
+
+
 }
