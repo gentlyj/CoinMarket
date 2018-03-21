@@ -1,5 +1,6 @@
 package com.ifading.coinmarket.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,11 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ifading.coinmarket.R;
+import com.ifading.coinmarket.activity.FullScreenImageActivity;
 import com.ifading.coinmarket.adapter.ImageAdapter;
 import com.ifading.coinmarket.api.ApiConstant;
 import com.ifading.coinmarket.bean.FuliResult;
 import com.ifading.coinmarket.net.FuliRequestInterface;
+
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +56,7 @@ public class ImageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_coin_market, container, false);
         ButterKnife.bind(this, view);
         initView();
-
+        initData();
         Timber.tag(TAG).d("CoinMarketFragment,onCreateView");
         return view;
     }
@@ -59,11 +64,11 @@ public class ImageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        initData();
+
     }
 
     private void initView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this.getActivity().getApplicationContext(),1);
+        GridLayoutManager layoutManager = new GridLayoutManager(this.getActivity().getApplicationContext(), 1);
         mRv.setLayoutManager(layoutManager);
     }
 
@@ -74,14 +79,29 @@ public class ImageFragment extends Fragment {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         FuliRequestInterface request = retrofit.create(FuliRequestInterface.class);
+        Random rand = new Random();
+        //随机数量和页数
+        String pageString = String.valueOf(rand.nextInt(40));
+        String amountString = String.valueOf(rand.nextInt(20)+9);
 
-        Call<FuliResult> call = request.getCall();
+        Call<FuliResult> call = request.getCall(amountString, pageString);
         call.enqueue(new Callback<FuliResult>() {
             @Override
-            public void onResponse(Call<FuliResult> call, Response<FuliResult> response) {
-                Timber.tag(TAG).d(response.body().toString());
-                ImageAdapter homeAdapter = new ImageAdapter(R.layout.item_image, response.body().getResults());
-                mRv.setAdapter(homeAdapter);
+            public void onResponse(Call<FuliResult> call, final Response<FuliResult> response) {
+                //Timber.tag(TAG).d(response.body().toString());
+                BaseQuickAdapter imageAdapter = new ImageAdapter(R.layout.item_image, response.body().getResults());
+
+                imageAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                        Timber.tag(TAG).d("onItemClick,position:" + position);
+                        String url = response.body().getResults().get(position).getUrl();
+                        Intent intent = new Intent(ImageFragment.this.getContext(), FullScreenImageActivity.class);
+                        intent.putExtra(FullScreenImageActivity.IMAGE_URL, url);
+                        startActivity(intent);
+                    }
+                });
+                mRv.setAdapter(imageAdapter);
             }
 
             @Override

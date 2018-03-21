@@ -1,4 +1,4 @@
-package com.ifading.coinmarket;
+package com.ifading.coinmarket.activity;
 
 import android.graphics.Color;
 import android.support.design.widget.TabLayout;
@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ifading.coinmarket.R;
 import com.ifading.coinmarket.fragment.CoinMarketFragment;
 import com.ifading.coinmarket.fragment.ImageFragment;
 import com.ifading.coinmarket.fragment.NewsFragment;
