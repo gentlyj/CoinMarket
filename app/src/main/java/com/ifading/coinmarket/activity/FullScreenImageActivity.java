@@ -61,33 +61,38 @@ public class FullScreenImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (mPv.getScale() <= 1) {
-                    finish();
+                    fadeFinish();
                 }
             }
         });
 
-        mPv.setOnTouchListener(new View.OnTouchListener() {
+        /*mPv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 Timber.tag(getClass().getName()).d("dispatchTouchEvent,mPv.onTouch():+motionEvent:"+motionEvent.getPointerCount());
 
                 return false;
             }
-        });
+        });*/
 
     }
 
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        Timber.tag(getClass().getName()).d("dispatchTouchEvent,mPv.getScale():" + mPv.getScale() + " ev.getPointerCount():" + ev.getPointerCount());
-        if (mPv.getScale() <= 1 && ev.getPointerCount() == 1) {
-            //mPv.setClickable(false);
-            Timber.tag(getClass().getName()).d("进来了");
-            return super.dispatchTouchEvent(ev);
-        }
-        return super.dispatchTouchEvent(ev);
+    private void fadeFinish() {
+        finish();
+        overridePendingTransition(R.anim.custom_fade_in, R.anim.custom_fade_out);
     }
+
+
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        Timber.tag(getClass().getName()).d("dispatchTouchEvent,mPv.getScale():" + mPv.getScale() + " ev.getPointerCount():" + ev.getPointerCount());
+//        if (mPv.getScale() <= 1 && ev.getPointerCount() == 1) {
+//            //mPv.setClickable(false);
+//            Timber.tag(getClass().getName()).d("进来了");
+//            return super.dispatchTouchEvent(ev);
+//        }
+//        return super.dispatchTouchEvent(ev);
+//    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -100,5 +105,11 @@ public class FullScreenImageActivity extends AppCompatActivity {
             return super.onTouchEvent(event);
         }*/
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        fadeFinish();
     }
 }

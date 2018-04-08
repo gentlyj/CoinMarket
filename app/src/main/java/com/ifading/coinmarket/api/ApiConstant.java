@@ -13,4 +13,6 @@ public interface ApiConstant {
     String NEWS_BASE_URL = "https://api.xinwen.cn";
     String COIN_BASE_URL = "https://api.coinmarketcap.com/";
     String IMAGE_BASE_URL = "http://gank.io/api/";
+    String READHUB_BASE_URL = "https://api.readhub.me/";
+
 }

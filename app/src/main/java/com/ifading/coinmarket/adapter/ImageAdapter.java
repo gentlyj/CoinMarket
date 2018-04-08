@@ -22,6 +22,7 @@ import com.ifading.coinmarket.R;
 import com.ifading.coinmarket.bean.FuliResult;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,6 +43,11 @@ public class ImageAdapter extends BaseQuickAdapter<FuliResult.Results, BaseViewH
         super(layoutResId, data);
 
     }
+
+    public void clearItemHeightCache(){
+        infos.clear();
+    }
+
 
     @Override
     protected void convert(final BaseViewHolder helper, FuliResult.Results item) {

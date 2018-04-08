@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout.Tab two;
     private TabLayout.Tab three;
 
-    private String[] mTitles = {"Coin", "News", "Imgs"};
-    private int[] mUnselectImgs = {R.drawable.coin_unselect, R.drawable.news_unselect, R.drawable.image_unselect};
-    private int[] mSelectImgs = {R.drawable.coin_select, R.drawable.news_select, R.drawable.image_select};
+    private String[] mTitles = {"Coin", "Imgs", "News"};
+    private int[] mUnselectImgs = {R.drawable.coin_unselect, R.drawable.image_unselect, R.drawable.news_unselect};
+    private int[] mSelectImgs = {R.drawable.coin_select, R.drawable.image_select, R.drawable.news_select};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +53,12 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 Timber.tag(TAG).d("onTabSelected");
 
-                /*for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
-                    //获得到对应位置的Tab
-                    TabLayout.Tab itemTab = mTabLayout.getTabAt(i);
-                    if (itemTab != null) {
-                        //设置自定义的标题
-                        itemTab.setCustomView(R.layout.item_tab);
-                        TextView textView = (TextView) itemTab.getCustomView().findViewById(R.id.tv_tab_name);
-                        textView.setText(mTitles[i]);
-                        ImageView imageView= (ImageView) itemTab.getCustomView().findViewById(R.id.iv_tab_ico);
-                        imageView.setImageResource(mUnselectImgs[i]);
-                    }
-                }*/
                 TextView tv = (TextView) tab.getCustomView().findViewById(R.id.tv_tab_name);
                 tv.setTextColor(Color.GREEN);
                 ImageView iv = (ImageView) tab.getCustomView().findViewById(R.id.iv_tab_ico);
 
                 iv.setImageResource(mSelectImgs[tab.getPosition()]);
+                getSupportActionBar().setTitle(mTitles[tab.getPosition()]);
             }
 
             @Override
@@ -92,22 +81,21 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         //给TabLayout设置关联ViewPager，如果设置了ViewPager，那么ViewPagerAdapter中的getPageTitle()方法返回的就是Tab上的标题
         mTabLayout.setupWithViewPager(mViewPager);
-
+        mViewPager.setOffscreenPageLimit(3);
         MainViewPager viewPagerAdapter = new MainViewPager(getSupportFragmentManager());
         CoinMarketFragment mCoinFragment = CoinMarketFragment.newInstance(0);
-        NewsFragment mNewsFragment = NewsFragment.newInstance(1);
-        ImageFragment imageFragment = ImageFragment.newInstance(2);
+        ImageFragment imageFragment = ImageFragment.newInstance(1);
+        NewsFragment mNewsFragment = NewsFragment.newInstance(2);
         viewPagerAdapter.addFragment(mCoinFragment, "Coin");
-        viewPagerAdapter.addFragment(mNewsFragment, "News");
         viewPagerAdapter.addFragment(imageFragment, "Imgs");
-
+        viewPagerAdapter.addFragment(mNewsFragment, "News");
         mViewPager.setAdapter(viewPagerAdapter);
         one = mTabLayout.getTabAt(0);
         two = mTabLayout.getTabAt(1);
         three = mTabLayout.getTabAt(2);
         one.setIcon(R.drawable.coin_unselect);
-        two.setIcon(R.drawable.news_unselect);
-        three.setIcon(R.drawable.image_unselect);
+        two.setIcon(R.drawable.image_unselect);
+        three.setIcon(R.drawable.news_unselect);
         for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
             //获得到对应位置的Tab
             TabLayout.Tab itemTab = mTabLayout.getTabAt(i);

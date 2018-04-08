@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/tv_home_item_id"
         android:layout_width="87dp"
-        android:layout_height="30dp"
+        android:layout_height="26dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -20,19 +20,20 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tv_home_item_value"
-        android:layout_width="100dp"
+        android:layout_width="99dp"
         android:layout_height="21dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_home_item_id"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.523" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tv_home_item_change"
@@ -50,16 +51,27 @@
         app:layout_constraintVertical_bias="0.538" />
 
     <TextView
+        android:id="@+id/tv_home_item_cap"
+        android:layout_width="189dp"
+        android:layout_height="17dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_home_item_value"
+        app:layout_constraintTop_toBottomOf="@+id/tv_home_item_value" />
+
+    <TextView
         android:id="@+id/tv_home_item_name"
         android:layout_width="114dp"
         android:layout_height="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_home_item_id"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_home_item_id" />
 
     <View
         android:layout_width="match_parent"
